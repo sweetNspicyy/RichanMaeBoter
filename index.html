@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>RichanPortfolio</title>
+    <title>Boter Portfolio</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
-    <!-- Font Awesome for icons (lightweight CDN) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 
-    <!-- Floating Blobs -->
+    <!-- Floating Blobs & Sparkles -->
     <div class="blob blob1"></div>
     <div class="blob blob2"></div>
     <div class="blob blob3"></div>
-
-    <!-- Sparkles -->
     <div class="sparkle sparkle1"></div>
     <div class="sparkle sparkle2"></div>
     <div class="sparkle sparkle3"></div>
@@ -24,88 +21,230 @@
     <!-- NAVBAR -->
     <header>
         <nav class="navbar">
-            <div class="logo">Richan<span>Portfolio</span></div>
+            <a href="#home" class="logo-link">
+                <div class="logo">Boter<span>Portfolio</span></div>
+            </a>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#logs">Logs</a></li>
+                <li><a href="#about-me">About Me</a></li>
+                <li><a href="#company">Company</a></li>
+                <li><a href="#logs">Daily Logs</a></li>
+                <li><a href="#learnings">Key Learnings</a></li>
                 <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#reflection">Reflection</a></li>
+                <li><a href="#pictorial">Team Moments</a></li>
+                <li><a href="#culminating">Culminating Activity</a></li>
+                <li><a href="#closing">Reflection</a></li>
             </ul>
             <div class="menu-btn" onclick="toggleMenu()">☰</div>
         </nav>
     </header>
 
-    <!-- HERO SECTION -->
+    <!-- HOME -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1 class="title">Welcome to My Immersion Portfolio</h1>
-            <p class="subtitle">Showcasing my experience, activities, and growth throughout my work immersion journey.</p>
-            <a href="#about" class="explore-btn">Explore</a>
+            <h1 class="title">360° Immersion Portfolio's Highlights</h1>
+            <p class="subtitle">Showcasing Richan Mae I. Boter’s full and remarkable 80-hour Work Immersion experience at Ark-Asia Company.</p>
+            <a href="#about-me" class="explore-btn">Explore</a>
         </div>
     </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="about">
+    <!-- ABOUT ME -->
+    <section id="about-me" class="about">
         <h2 class="section-title">About Me</h2>
-        <p class="section-desc">Hi! I am <strong>Richan Mae I. Boter</strong>. This website contains all my work immersion documents, logs, reflection, and activities. I created this portfolio to present my progress and accomplishments during my immersion training.</p>
+        <div class="about-intro">
+            <blockquote>
+                “Welcome to My Immersion Portfolio.<br>
+                Showcasing my experience, activities, and growth throughout my work immersion journey.”
+            </blockquote>
+        </div>
+        <p class="section-desc">
+            Hi! I am <strong>Richan Mae I. Boter</strong>. This website contains all my work immersion documents, logs, reflection, and activities. I created this portfolio to present my progress and accomplishments during my immersion training.
+        </p>
     </section>
 
-    <!-- 10-DAY LOGS -->
+    <!-- COMPANY -->
+    <section id="company" class="company-section">
+        <h2 class="section-title">About Ark-Asia</h2>
+        <p class="carousel-instruction">To view the full image, click on any photo.</p>
+        <div class="day-gallery" data-day="arkasia"></div>
+
+        <p class="section-desc">
+            ArkAsia Constructors and Developers, Corp. is a construction and engineering company that specializes in building commercial establishments, designing structural plans, and managing full project developments. They handle various stages of construction from planning and drafting blueprints to supervising onsite progress and ensuring that every structure meets safety and quality standards. The company works closely with architects, civil engineers, electrical engineers, and project managers, making it a collaborative environment where different fields come together to complete a project. Their operations are well-organized and professional, which allowed us to observe how real engineering projects are planned, monitored, and executed.
+        </p>
+        <p class="section-desc">
+            ArkAsia Constructors and Developers, Corp. gave us a meaningful immersion experience by allowing us to explore real work related to Civil Engineering and Architecture. They guided us through reading blueprints, organizing project documents, and observing how construction plans are prepared and executed. The trainers also taught us how to use AutoCAD and SketchUp, letting us experience how engineers design structures. Through their support and hands-on activities, we gained a clearer understanding of the field and appreciated the effort, precision, and teamwork required in the engineering profession.
+        </p>
+    </section>
+
+    <!-- DAILY LOGS -->
     <section id="logs" class="logs">
         <h2 class="section-title">10-Day Immersion Logbook</h2>
-        <div class="log-container">
-            <div class="log-card"><h3>Day 1</h3><p>Description of activities, tasks, and learnings for Day 1.</p></div>
-            <div class="log-card"><h3>Day 2</h3><p>Description of activities, tasks, and learnings for Day 2.</p></div>
-            <div class="log-card"><h3>Day 3</h3><p>Description of activities, tasks, and learnings for Day 3.</p></div>
-            <div class="log-card"><h3>Day 4</h3><p>Description of activities, tasks, and learnings for Day 4.</p></div>
-            <div class="log-card"><h3>Day 5</h3><p>Description of activities, tasks, and learnings for Day 5.</p></div>
-            <div class="log-card"><h3>Day 6</h3><p>Description of activities, tasks, and learnings for Day 6.</p></div>
-            <div class="log-card"><h3>Day 7</h3><p>Description of activities, tasks, and learnings for Day 7.</p></div>
-            <div class="log-card"><h3>Day 8</h3><p>Description of activities, tasks, and learnings for Day 8.</p></div>
-            <div class="log-card"><h3>Day 9</h3><p>Description of activities, tasks, and learnings for Day 9.</p></div>
-            <div class="log-card"><h3>Day 10</h3><p>Description of activities, tasks, and learnings for Day 10.</p></div>
+
+        <div class="log-day">
+            <h3>Day 1</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="1"></div>
+            <p class="log-insight">Today’s immersion taught me how important it is to understand the real responsibilities of engineers and architectural designers. I realized that working in this field requires discipline, accuracy, and strong communication skills. Observing their teamwork made me appreciate how essential CLARITY and COORDINATION are in ensuring the progress of a project. This experience made me more grateful because we were given the opportunity to listen to actual reporting from different engineers. Overall, the day helped me grow by showing me the level of dedication and professionalism needed in the engineering industry.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 2</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="2"></div>
+            <p class="log-insight">Today made me realize how important it is to understand both the technical skills and the real-world responsibilities involved in the engineering field. Listening to the experiences of professionals taught me that growth requires openness, willingness to learn, and the ability to adapt. The advice from Engr. Ian and Engr. Val motivated me to stay committed to my goals, even when the journey becomes difficult. Their approachability showed me the value of humility and good leadership in the workplace. Overall, the day helped strengthen my confidence and gave me a clearer vision of the kind of professional I want to become.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 3</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="3"></div>
+            <p class="log-insight">Today gave me a clearer picture of how organized and systematic the engineering field is, especially when it comes to handling important documents. It made me realize that every file matters because it affects the progress of the project, the work of the engineers, and the needs of the clients. This experience improved my sense of responsibility and made me more detail-oriented. It also reminded me that real-world tasks require discipline, patience, and willingness to learn. Overall, the day helped strengthen my work ethic and taught me to value accuracy and proper documentation.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 4</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="4"></div>
+            <p class="log-insight">Today gave me a deeper appreciation for the complexity of designing a floor plan. It showed me that engineering and architectural work involve not only creativity but also strict accuracy and proper standards. Learning the basics of AutoCAD made me more aware of how professionals transform ideas into technical drawings. This experience improved my patience and strengthened my willingness to learn new tools, even if they seem challenging at first. Overall, the day helped me become more detail-oriented and motivated to develop skills that will be useful for my future career.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 5</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="5"></div>
+            <p class="log-insight">Today made me realize how important attention to detail is in engineering and construction work. I learned that every small mistake can affect the overall quality and safety of a project. This experience improved my patience and ability to observe carefully before making conclusions. It also motivated me to be more responsible, curious, and eager to learn from real-life situations.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 6</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="6"></div>
+            <p class="log-insight">My insight for today is that real engineering work requires both technical knowledge and good communication. I realized that reporting progress is not just about completing a task but about presenting it with confidence and professionalism. Receiving compliments and reflections from the engineers helped me understand the standards of the industry. This experience improved me by making me more responsible, motivated, and aware of what is expected in the engineering world.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 7</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="7"></div>
+            <p class="log-insight">My insight for today is that real engineering tasks require both classroom knowledge and practical experience. I realized that understanding materials in person is very different from just studying them in books. The quizzes and hands-on work helped me become more attentive and focused. Learning new software made me feel more prepared for future design tasks. This experience improved me by making me more observant, responsible, and open to learning new skills.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 8</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="8"></div>
+            <p class="log-insight">This day made me realize how important patience and accuracy are in real work settings. Even though the task was tiring, it taught me to stay focused and organized. I also learned to handle discomfort while still performing my responsibilities. Overall, the experience helped strengthen my work ethic and made me more aware of the realities of on-site tasks.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 9</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="9"></div>
+            <p class="log-insight">Today made me realize the importance of learning practical skills beyond what we study in school. I understood that workplace tasks require patience, adaptability, and willingness to learn new tools. My experiences taught me to be more organized and responsible, especially when handling important documents. Overall, the day helped me grow by improving my efficiency and boosting my confidence in performing office tasks.</p>
+        </div>
+
+        <div class="log-day">
+            <h3>Day 10</h3>
+            <p class="carousel-instruction">To view the full image, click on any photo.</p>
+            <div class="day-gallery" data-day="10"></div>
+            <p class="log-insight">I realized how important precision and proper workflow are in the engineering and architectural field. Seeing real design files made me appreciate the amount of effort that goes into every detail. Presenting my reflections strengthened my confidence in reporting professionally. Overall, today helped me become more disciplined, focused, and aware of the expectations in real-world engineering.</p>
+        </div>
+    </section>
+
+    <!-- KEY LEARNINGS -->
+    <section id="learnings" class="logs">
+        <h2 class="section-title">Key Learnings</h2>
+
+        <div class="log-day">
+            <h3>Understanding the Real Work in Engineering and Architectural World</h3>
+            <p class="section-desc">
+                My immersion helped me see how engineering works beyond textbooks. I learned how blueprints, floor plans, site visits, and materials all connect in actual projects. Seeing how engineers communicate, plan, and solve problems made me realize how detailed and challenging the engineering field really is. It also showed me the importance of accuracy, teamwork, and responsibility in every construction project.
+            </p>
+        </div>
+
+        <div class="log-day">
+            <h3>Hands-On Skills</h3>
+            <p class="section-desc">
+                Throughout the immersion, I gained practical experience using AutoCAD and SketchUp, organizing blueprints, and checking project documents. These tasks helped me understand the technical side of Civil Engineering and Architecture. Even though the work was sometimes difficult, especially with measurements and specifications, it taught me patience and improved my confidence in using engineering tools and software.
+            </p>
+        </div>
+
+        <div class="log-day">
+            <h3>Inspiration and Guidance</h3>
+            <p class="section-desc">
+                ArkAsia Constructors and Developers, Corp. created a very supportive learning environment. The engineers and trainers were approachable, patient, and willing to guide us at every step. Their dedication and professionalism inspired me to pursue engineering in college. Their advice especially about the challenges and expectations in the field helped me become more prepared and motivated for my future career.
+            </p>
         </div>
     </section>
 
     <!-- GALLERY -->
     <section id="gallery" class="gallery">
         <h2 class="section-title">Immersion Gallery</h2>
+        <p class="gallery-instruction">To view the full image, click on any photo.</p>
         <div class="slider-container">
             <button class="prev">&#10094;</button>
             <div class="slider" id="gallerySlider"></div>
             <button class="next">&#10095;</button>
         </div>
+        <p class="gallery-quote">“Imagine freely, build firmly.”</p>
+    </section>
+
+    <!-- TEAM MOMENTS -->
+    <section id="pictorial" class="gallery">
+        <h2 class="section-title">Team Moments</h2>
+        <p class="carousel-instruction">To view the full image, click on any photo.</p>
+        <div class="day-gallery" data-day="admins"></div>
+    </section>
+
+    <!-- CULMINATING ACTIVITY -->
+    <section id="culminating" class="gallery">
+        <h2 class="section-title">Culminating Activity</h2>
+        <p class="carousel-instruction">To view the full image, click on any photo.</p>
+        <div class="day-gallery" data-day="culminating"></div>
     </section>
 
     <!-- REFLECTION -->
-    <section id="reflection" class="reflection">
+    <section id="closing" class="reflection">
         <h2 class="section-title">Reflection</h2>
-        <div class="reflection-card">
-            <p>My personal insights, realizations, and experiences throughout my work immersion program.</p>
+        <div class="saying-container">
+            <img src="images/rsaying.jpg" alt="Richan Mae Boter" class="saying-img" />
+            <div class="saying-text">
+                <blockquote>
+                    “Design boldly, build wisely.”
+                </blockquote>
+                <p>I believe that strong ideas and careful planning go hand in hand, and that true engineering success comes from balancing creativity with precision.</p>
+            </div>
+        </div>
+
+        <div class="client-info">
+            <h3>My Information</h3>
+            <p><strong>Name:</strong> Richan Mae I. Boter</p>
+            <p><strong>Grade & Section:</strong> 12-STEM ATOM-ENGINEERING</p>
+            <p><strong>Contact Number:</strong> 09608658525</p>
+            <p><strong>Facebook:</strong> Richan Mae</p>
+            <p><strong>Gmail:</strong> boterrichanmae@gmail.com</p>
+            <p class="thank-you">Thank you for exploring my immersion journey!</p>
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-        <p>© 2025 Richan Immersion Portfolio</p>
-        <div class="contact-section">
-            <p>✨ Want a website like this? Contact me!</p>
-            <div class="contact-links">
-                <a href="mailto:kentvincentboter456@gmail.com?subject=Website%20Inquiry&body=Hi%20Kent!%20I%27d%20like%20to%20discuss%20a%20website%20project." class="contact-email">
-                    <i class="fas fa-envelope"></i> contactushere@gmail.com
-                </a>
-                <a href="https://www.facebook.com/vincent.park.7921" target="_blank" rel="noopener" class="contact-fb">
-                    <i class="fab fa-facebook-f"></i> Facebook
-                </a>
-            </div>
+        <p class="footer-prompt">✨ Want a website like this? Contact me!</p>
+        <div class="footer-contact">
+            <a href="mailto:kentvincentboter456@gmail.com?subject=Website%20Inquiry&body=Hi%20Kent!%20I%27d%20like%20to%20discuss%20a%20website%20project." class="footer-email">
+                <i class="fas fa-envelope"></i> ContactMe@gmail.com
+            </a>
+            <a href="https://www.facebook.com/vincent.park.7921" target="_blank" rel="noopener" class="footer-fb">
+                <i class="fab fa-facebook-f"></i> Facebook
+            </a>
         </div>
+        <p class="footer-copyright">© 2025 Richan Mae I. Boter Portfolio</p>
     </footer>
 
     <!-- LIGHTBOX -->
     <div id="lightbox" class="lightbox">
         <span class="close">&times;</span>
-        <img class="lightbox-img" id="lightboxImg" src="" alt="Gallery Image" />
+        <img class="lightbox-img" id="lightboxImg" src="" alt="Portfolio Image" />
         <a class="lightbox-prev">&#10094;</a>
         <a class="lightbox-next">&#10095;</a>
     </div>
