@@ -1,30 +1,37 @@
-// Smooth scroll with offset for fixed navbar (NO CSS HACKS)
+// Unified smooth scroll function with offset
 function scrollToSection(id) {
     const element = document.getElementById(id);
     if (element) {
-        const yOffset = -80; // Adjust for navbar height
+        const yOffset = -80; // Adjust for fixed navbar height
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
     }
 }
 
-// Update all navbar links
-document.querySelectorAll('.nav-links a').forEach(link => {
+// Handle all desktop navbar links
+document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href');
-        if (href.startsWith('#') && href !== '#') {
-            e.preventDefault();
-            const id = href.substring(1);
-            scrollToSection(id);
-            document.querySelector('.nav-links').classList.remove('active');
-        }
+        e.preventDefault();
+        const target = link.getAttribute('href').substring(1);
+        scrollToSection(target);
     });
 });
 
-// Mobile Menu Toggle
-function toggleMenu() {
-    document.querySelector('.nav-links').classList.toggle('active');
-}
+// Handle "Explore" button
+document.querySelector('.explore-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    scrollToSection('about-me');
+});
+
+// Handle mobile sidebar links
+document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = link.getAttribute('href').substring(1);
+        scrollToSection(target);
+        closeSidebar();
+    });
+});
 
 // Logo scroll to top
 document.querySelector('.logo-link').addEventListener('click', (e) => {
@@ -32,7 +39,34 @@ document.querySelector('.logo-link').addEventListener('click', (e) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// LIGHTBOX SYSTEM
+// Mobile sidebar
+function toggleMenu() {
+    document.getElementById('mobileSidebar').classList.add('active');
+    let overlay = document.getElementById('sidebarOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'sidebarOverlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        `;
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', closeSidebar);
+    } else {
+        overlay.style.display = 'block';
+    }
+}
+
+function closeSidebar() {
+    document.getElementById('mobileSidebar').classList.remove('active');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+// LIGHTBOX SYSTEM (unchanged)
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 let lightboxImages = [];
@@ -73,7 +107,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// DAY CAROUSEL CLASS
+// DAY CAROUSEL CLASS (unchanged)
 class DayCarousel {
     constructor(container, dayKey, imageCount = 3) {
         this.container = container;
