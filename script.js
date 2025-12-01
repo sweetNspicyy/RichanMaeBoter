@@ -2,7 +2,7 @@
 function scrollToSection(id) {
     const element = document.getElementById(id);
     if (element) {
-        const yOffset = -80; // Adjust for fixed navbar height
+        const yOffset = -80;
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
     }
@@ -66,7 +66,7 @@ function closeSidebar() {
     if (overlay) overlay.style.display = 'none';
 }
 
-// LIGHTBOX SYSTEM (unchanged)
+// LIGHTBOX SYSTEM
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 let lightboxImages = [];
@@ -107,7 +107,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// DAY CAROUSEL CLASS (unchanged)
+// DAY CAROUSEL CLASS
 class DayCarousel {
     constructor(container, dayKey, imageCount = 3) {
         this.container = container;
