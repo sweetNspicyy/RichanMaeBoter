@@ -1,4 +1,41 @@
-// Unified smooth scroll function with offset
+// Auto-scroll to home on load
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 300);
+});
+
+// Create bubbles helper
+function createBubbles(containerId, minCount = 5, maxCount = 7, className = 'home-bubble') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '';
+    const count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
+
+    for (let i = 0; i < count; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = className;
+        
+        const size = 40 + Math.random() * 80;
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const delay = Math.random() * 10;
+        const duration = 12 + Math.random() * 10;
+        
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${x}%`;
+        bubble.style.top = `${y}%`;
+        bubble.style.animationDelay = `${delay}s`;
+        bubble.style.animationDuration = `${duration}s`;
+        bubble.style.opacity = 0.4 + Math.random() * 0.3;
+        
+        container.appendChild(bubble);
+    }
+}
+
+// Unified smooth scroll with offset
 function scrollToSection(id) {
     const element = document.getElementById(id);
     if (element) {
@@ -8,35 +45,57 @@ function scrollToSection(id) {
     }
 }
 
-// Handle all desktop navbar links
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
+// ✅ ACCURATE ACTIVE SECTION HIGHLIGHTING
+function updateActiveNav() {
+    const sections = ['home', 'about-me', 'company', 'logs', 'learnings', 'gallery', 'pictorial', 'culminating', 'closing'];
+    const navbarHeight = 80;
+    let current = 'home';
+
+    for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        const top = rect.top;
+        const bottom = rect.bottom;
+
+        // Section is active if it's the first one whose top is near or above the navbar
+        // and bottom is still below the navbar
+        if (top <= navbarHeight + 30 && bottom >= navbarHeight + 30) {
+            current = id;
+            break;
+        }
+    }
+
+    // Update both desktop and mobile navs
+    document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
         const target = link.getAttribute('href').substring(1);
-        scrollToSection(target);
+        link.classList.toggle('active', target === current);
     });
-});
+}
 
-// Handle "Explore" button
-document.querySelector('.explore-btn').addEventListener('click', (e) => {
-    e.preventDefault();
-    scrollToSection('about-me');
-});
-
-// Handle mobile sidebar links
-document.querySelectorAll('.sidebar-link').forEach(link => {
+// Event listeners
+document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
         const target = link.getAttribute('href').substring(1);
         scrollToSection(target);
         closeSidebar();
+        setTimeout(updateActiveNav, 400); // wait for scroll to complete
     });
 });
 
-// Logo scroll to top
-document.querySelector('.logo-link').addEventListener('click', (e) => {
+document.querySelector('.explore-btn')?.addEventListener('click', (e) => {
     e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToSection('about-me');
+    setTimeout(updateActiveNav, 400);
+});
+
+document.querySelectorAll('.logo-link').forEach(el => {
+    el.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(updateActiveNav, 400);
+    });
 });
 
 // Mobile sidebar
@@ -66,7 +125,7 @@ function closeSidebar() {
     if (overlay) overlay.style.display = 'none';
 }
 
-// LIGHTBOX SYSTEM
+// LIGHTBOX
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 let lightboxImages = [];
@@ -93,10 +152,10 @@ function lightboxPrev() {
     lightboxImg.src = lightboxImages[currentLightboxIndex];
 }
 
-document.querySelector('.lightbox .close').addEventListener('click', closeLightbox);
-document.querySelector('.lightbox-prev').addEventListener('click', lightboxPrev);
-document.querySelector('.lightbox-next').addEventListener('click', lightboxNext);
-lightbox.addEventListener('click', (e) => {
+document.querySelector('.lightbox .close')?.addEventListener('click', closeLightbox);
+document.querySelector('.lightbox-prev')?.addEventListener('click', lightboxPrev);
+document.querySelector('.lightbox-next')?.addEventListener('click', lightboxNext);
+lightbox?.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
 });
 document.addEventListener('keydown', (e) => {
@@ -218,7 +277,7 @@ class DayCarousel {
     }
 }
 
-// MAIN GALLERY (66 images)
+// MAIN GALLERY
 const totalImages = 66;
 const gallerySlider = document.getElementById('gallerySlider');
 
@@ -227,13 +286,12 @@ for (let i = 1; i <= totalImages; i++) {
     img.src = `images/gallery/r${i}.jpg`;
     img.alt = `Gallery Image ${i}`;
     img.addEventListener('click', () => {
-        const allGalleryPaths = Array.from({length: totalImages}, (_, i) => `images/gallery/r${i + 1}.jpg`);
-        openLightbox(allGalleryPaths, i - 1);
+        const paths = Array.from({length: totalImages}, (_, i) => `images/gallery/r${i + 1}.jpg`);
+        openLightbox(paths, i - 1);
     });
     gallerySlider.appendChild(img);
 }
 
-// MAIN GALLERY NAVIGATION
 let mainCurrentSlide = 0;
 const mainPrevBtn = document.querySelector('.prev');
 const mainNextBtn = document.querySelector('.next');
@@ -280,28 +338,28 @@ function startMainAutoPlay() {
     }, 4000);
 }
 
-mainPrevBtn.addEventListener('click', () => {
+mainPrevBtn?.addEventListener('click', () => {
     if (mainCurrentSlide > 0) mainCurrentSlide--;
     updateMainSlider();
     onMainInteraction();
 });
 
-mainNextBtn.addEventListener('click', () => {
+mainNextBtn?.addEventListener('click', () => {
     const visible = getMainVisibleCount();
     if (mainCurrentSlide < totalImages - visible) mainCurrentSlide++;
     updateMainSlider();
     onMainInteraction();
 });
 
-gallerySlider.addEventListener('mouseenter', onMainInteraction);
-gallerySlider.addEventListener('mouseleave', resetMainAutoPlay);
-window.addEventListener('load', () => {
-    updateMainSlider();
-    startMainAutoPlay();
-});
+gallerySlider?.addEventListener('mouseenter', onMainInteraction);
+gallerySlider?.addEventListener('mouseleave', resetMainAutoPlay);
 
-// INITIALIZE ALL CAROUSELS
+// INIT
 document.addEventListener('DOMContentLoaded', () => {
+    createBubbles('homeBubbles', 5, 7, 'home-bubble');
+    // ❌ Bubbles REMOVED in reflection section — intentional
+
+    // Carousels
     for (let day = 1; day <= 10; day++) {
         const el = document.querySelector(`.day-gallery[data-day="${day}"]`);
         if (el) new DayCarousel(el, day, 3);
@@ -315,4 +373,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const arkasiaEl = document.querySelector('.day-gallery[data-day="arkasia"]');
     if (arkasiaEl) new DayCarousel(arkasiaEl, 'arkasia', 2);
+
+    // Gallery
+    window.addEventListener('load', () => {
+        updateMainSlider();
+        startMainAutoPlay();
+        updateActiveNav();
+    });
+
+    // Throttled scroll for performance + accuracy
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                updateActiveNav();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        updateMainSlider();
+        updateActiveNav();
+    });
 });
