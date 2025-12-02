@@ -45,7 +45,7 @@ function scrollToSection(id) {
     }
 }
 
-// ✅ ACCURATE ACTIVE SECTION HIGHLIGHTING
+// ACCURATE ACTIVE SECTION HIGHLIGHTING
 function updateActiveNav() {
     const sections = ['home', 'about-me', 'company', 'logs', 'learnings', 'gallery', 'pictorial', 'culminating', 'closing'];
     const navbarHeight = 80;
@@ -58,15 +58,12 @@ function updateActiveNav() {
         const top = rect.top;
         const bottom = rect.bottom;
 
-        // Section is active if it's the first one whose top is near or above the navbar
-        // and bottom is still below the navbar
         if (top <= navbarHeight + 30 && bottom >= navbarHeight + 30) {
             current = id;
             break;
         }
     }
 
-    // Update both desktop and mobile navs
     document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
         const target = link.getAttribute('href').substring(1);
         link.classList.toggle('active', target === current);
@@ -80,7 +77,7 @@ document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
         const target = link.getAttribute('href').substring(1);
         scrollToSection(target);
         closeSidebar();
-        setTimeout(updateActiveNav, 400); // wait for scroll to complete
+        setTimeout(updateActiveNav, 400);
     });
 });
 
@@ -90,7 +87,7 @@ document.querySelector('.explore-btn')?.addEventListener('click', (e) => {
     setTimeout(updateActiveNav, 400);
 });
 
-document.querySelectorAll('.logo-link').forEach(el => {
+document.querySelectorAll('.logo-link, .mobile-logo-link').forEach(el => {
     el.addEventListener('click', (e) => {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -166,6 +163,44 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// ✅ UNIVERSAL SWIPE/DRAG SUPPORT
+function addSwipeSupport(container, onPrev, onNext) {
+    let startX = 0;
+    let startY = 0;
+    let isScrolling = false;
+
+    container.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        startX = e.clientX;
+        startY = e.clientY;
+        isScrolling = false;
+        container.setPointerCapture(e.pointerId);
+    });
+
+    container.addEventListener('pointermove', (e) => {
+        if (isScrolling) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (Math.abs(dy) > Math.abs(dx)) {
+            isScrolling = true;
+        }
+    });
+
+    container.addEventListener('pointerup', (e) => {
+        if (isScrolling) return;
+        const dx = e.clientX - startX;
+        const threshold = 50;
+
+        if (dx > threshold) {
+            onPrev();
+        } else if (dx < -threshold) {
+            onNext();
+        }
+    });
+
+    container.addEventListener('dragstart', (e) => e.preventDefault());
+}
+
 // DAY CAROUSEL CLASS
 class DayCarousel {
     constructor(container, dayKey, imageCount = 3) {
@@ -217,20 +252,12 @@ class DayCarousel {
         const prevBtn = document.createElement('button');
         prevBtn.className = 'day-prev';
         prevBtn.innerHTML = '‹';
-        prevBtn.addEventListener('click', () => {
-            if (this.currentSlide > 0) this.currentSlide--;
-            this.updateSlider();
-            this.onUserInteraction();
-        });
+        prevBtn.addEventListener('click', () => this.prev());
 
         const nextBtn = document.createElement('button');
         nextBtn.className = 'day-next';
         nextBtn.innerHTML = '›';
-        nextBtn.addEventListener('click', () => {
-            if (this.currentSlide < this.imageCount - 1) this.currentSlide++;
-            this.updateSlider();
-            this.onUserInteraction();
-        });
+        nextBtn.addEventListener('click', () => this.next());
 
         wrapper.appendChild(prevBtn);
         wrapper.appendChild(slider);
@@ -241,10 +268,24 @@ class DayCarousel {
         this.updateSlider();
         this.startAutoPlay();
         this.attachListeners(wrapper);
+
+        addSwipeSupport(wrapper, () => this.prev(), () => this.next());
     }
 
     updateSlider() {
         this.sliderEl.style.transform = `translateX(-${this.currentSlide * 100}%)`;
+    }
+
+    prev() {
+        if (this.currentSlide > 0) this.currentSlide--;
+        this.updateSlider();
+        this.onUserInteraction();
+    }
+
+    next() {
+        if (this.currentSlide < this.imageCount - 1) this.currentSlide++;
+        this.updateSlider();
+        this.onUserInteraction();
     }
 
     onUserInteraction() {
@@ -264,10 +305,7 @@ class DayCarousel {
     startAutoPlay() {
         if (this.userInteracted) return;
         clearInterval(this.autoPlayInterval);
-        this.autoPlayInterval = setInterval(() => {
-            this.currentSlide = (this.currentSlide + 1) % this.imageCount;
-            this.updateSlider();
-        }, 3500);
+        this.autoPlayInterval = setInterval(() => this.next(), 3500);
     }
 
     attachListeners(wrapper) {
@@ -327,29 +365,29 @@ function resetMainAutoPlay() {
 
 function startMainAutoPlay() {
     clearInterval(mainAutoPlay);
-    mainAutoPlay = setInterval(() => {
-        const visible = getMainVisibleCount();
-        if (mainCurrentSlide < totalImages - visible) {
-            mainCurrentSlide++;
-        } else {
-            mainCurrentSlide = 0;
-        }
-        updateMainSlider();
-    }, 4000);
+    mainAutoPlay = setInterval(() => mainNext(), 4000);
 }
 
-mainPrevBtn?.addEventListener('click', () => {
+function mainPrev() {
     if (mainCurrentSlide > 0) mainCurrentSlide--;
     updateMainSlider();
     onMainInteraction();
-});
+}
 
-mainNextBtn?.addEventListener('click', () => {
+function mainNext() {
     const visible = getMainVisibleCount();
     if (mainCurrentSlide < totalImages - visible) mainCurrentSlide++;
     updateMainSlider();
     onMainInteraction();
-});
+}
+
+mainPrevBtn?.addEventListener('click', mainPrev);
+mainNextBtn?.addEventListener('click', mainNext);
+
+const galleryContainer = document.querySelector('.slider-container');
+if (galleryContainer) {
+    addSwipeSupport(galleryContainer, mainPrev, mainNext);
+}
 
 gallerySlider?.addEventListener('mouseenter', onMainInteraction);
 gallerySlider?.addEventListener('mouseleave', resetMainAutoPlay);
@@ -357,9 +395,7 @@ gallerySlider?.addEventListener('mouseleave', resetMainAutoPlay);
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
     createBubbles('homeBubbles', 5, 7, 'home-bubble');
-    // ❌ Bubbles REMOVED in reflection section — intentional
 
-    // Carousels
     for (let day = 1; day <= 10; day++) {
         const el = document.querySelector(`.day-gallery[data-day="${day}"]`);
         if (el) new DayCarousel(el, day, 3);
@@ -374,14 +410,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const arkasiaEl = document.querySelector('.day-gallery[data-day="arkasia"]');
     if (arkasiaEl) new DayCarousel(arkasiaEl, 'arkasia', 2);
 
-    // Gallery
     window.addEventListener('load', () => {
         updateMainSlider();
         startMainAutoPlay();
         updateActiveNav();
     });
 
-    // Throttled scroll for performance + accuracy
     let ticking = false;
     window.addEventListener('scroll', () => {
         if (!ticking) {
