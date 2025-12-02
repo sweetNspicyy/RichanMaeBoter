@@ -315,6 +315,7 @@ section {
     border-radius: 16px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     width: 100%;
+    touch-action: pan-y; /* Allow vertical page scroll */
 }
 
 .day-slider {
@@ -376,6 +377,7 @@ section {
     overflow: hidden;
     padding: 0 2rem;
     width: 100%;
+    touch-action: pan-y; /* Allow vertical scroll */
 }
 
 .slider {
@@ -612,19 +614,22 @@ footer {
 .lightbox-prev { left: 30px; }
 .lightbox-next { right: 30px; }
 
-/* MOBILE SIDEBAR */
+/* MOBILE SIDEBAR — SCROLLABLE */
 .mobile-sidebar {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 75%;
-    height: 100%;
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
     background: rgba(84, 43, 133, 0.95);
     backdrop-filter: blur(10px);
     z-index: 1001;
     transition: left 0.3s ease;
     padding: 1.5rem;
     box-shadow: 4px 0 12px rgba(0,0,0,0.3);
+    overflow-y: auto; /* ✅ SCROLLABLE IN LANDSCAPE */
+    -webkit-overflow-scrolling: touch;
 }
 
 .mobile-sidebar.active {
@@ -638,7 +643,7 @@ footer {
     margin-bottom: 2rem;
 }
 
-/* ✅ MOBILE LOGO */
+/* MOBILE LOGO */
 .mobile-logo-link {
     text-decoration: none;
     color: white;
@@ -676,7 +681,7 @@ footer {
 }
 
 .sidebar-links a {
-    color: #d9b3ff; /* ✅ ALL items including Team Moments */
+    color: #d9b3ff;
     text-decoration: none;
     font-size: 1.2rem;
     font-weight: 500;
@@ -687,7 +692,7 @@ footer {
 
 .sidebar-links a:hover,
 .sidebar-links a.active {
-    color: white; /* ✅ Only when active/hover */
+    color: white;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
@@ -711,7 +716,7 @@ footer {
     .saying-container { flex-direction: column; text-align: center; }
     .section-title { font-size: 1.8rem; }
 
-    /* ✅ PERFECT FOOTER BUTTONS */
+    /* PERFECT FOOTER BUTTONS */
     .footer-contact {
         flex-direction: column;
         align-items: center;
