@@ -163,6 +163,47 @@ header {
     text-shadow: 0 0 8px rgba(248, 187, 208, 0.6);
 }
 
+/* ✅ HORIZONTAL NAV (LANDSCAPE ONLY) */
+.nav-links-horizontal {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    gap: 0;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+.nav-links-horizontal li {
+    display: inline-block;
+    margin: 0 0.4rem;
+}
+
+.nav-links-horizontal a {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+    min-width: 110px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.nav-links-horizontal a:hover,
+.nav-links-horizontal a.active {
+    background: rgba(248, 187, 208, 0.4);
+    color: #f8bbd0;
+    text-shadow: 0 0 6px rgba(248, 187, 208, 0.4);
+}
+
 .menu-btn {
     display: none;
     font-size: 1.8rem;
@@ -315,7 +356,7 @@ section {
     border-radius: 16px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     width: 100%;
-    touch-action: pan-y; /* Allow vertical page scroll */
+    touch-action: pan-y;
 }
 
 .day-slider {
@@ -377,7 +418,7 @@ section {
     overflow: hidden;
     padding: 0 2rem;
     width: 100%;
-    touch-action: pan-y; /* Allow vertical scroll */
+    touch-action: pan-y;
 }
 
 .slider {
@@ -614,7 +655,7 @@ footer {
 .lightbox-prev { left: 30px; }
 .lightbox-next { right: 30px; }
 
-/* MOBILE SIDEBAR — SCROLLABLE */
+/* MOBILE SIDEBAR */
 .mobile-sidebar {
     position: fixed;
     top: 0;
@@ -628,7 +669,7 @@ footer {
     transition: left 0.3s ease;
     padding: 1.5rem;
     box-shadow: 4px 0 12px rgba(0,0,0,0.3);
-    overflow-y: auto; /* ✅ SCROLLABLE IN LANDSCAPE */
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -643,7 +684,6 @@ footer {
     margin-bottom: 2rem;
 }
 
-/* MOBILE LOGO */
 .mobile-logo-link {
     text-decoration: none;
     color: white;
@@ -696,6 +736,30 @@ footer {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
+/* ✅ ACTIVATE HORIZONTAL NAV IN SMALL LANDSCAPE */
+@media (max-height: 500px) and (orientation: landscape),
+       (max-width: 820px) and (max-height: 500px) {
+    .nav-links:not(.nav-links-horizontal) {
+        display: none !important;
+    }
+
+    .nav-links-horizontal {
+        display: flex !important;
+    }
+
+    .navbar {
+        padding: 0.8rem 0.5rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .menu-btn {
+        display: none;
+    }
+}
+
 /* MOBILE MEDIA QUERY */
 @media screen and (max-width: 820px) {
     .menu-btn {
@@ -716,7 +780,6 @@ footer {
     .saying-container { flex-direction: column; text-align: center; }
     .section-title { font-size: 1.8rem; }
 
-    /* PERFECT FOOTER BUTTONS */
     .footer-contact {
         flex-direction: column;
         align-items: center;
