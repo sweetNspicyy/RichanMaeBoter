@@ -5,24 +5,20 @@ window.addEventListener('load', () => {
     }, 300);
 });
 
-// Create bubbles helper
+// Create bubbles
 function createBubbles(containerId, minCount = 5, maxCount = 7, className = 'home-bubble') {
     const container = document.getElementById(containerId);
     if (!container) return;
-
     container.innerHTML = '';
     const count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
-
     for (let i = 0; i < count; i++) {
         const bubble = document.createElement('div');
         bubble.className = className;
-        
         const size = 40 + Math.random() * 80;
         const x = Math.random() * 100;
         const y = Math.random() * 100;
         const delay = Math.random() * 10;
         const duration = 12 + Math.random() * 10;
-        
         bubble.style.width = `${size}px`;
         bubble.style.height = `${size}px`;
         bubble.style.left = `${x}%`;
@@ -30,12 +26,11 @@ function createBubbles(containerId, minCount = 5, maxCount = 7, className = 'hom
         bubble.style.animationDelay = `${delay}s`;
         bubble.style.animationDuration = `${duration}s`;
         bubble.style.opacity = 0.4 + Math.random() * 0.3;
-        
         container.appendChild(bubble);
     }
 }
 
-// Unified smooth scroll with offset
+// Scroll to section
 function scrollToSection(id) {
     const element = document.getElementById(id);
     if (element) {
@@ -45,32 +40,29 @@ function scrollToSection(id) {
     }
 }
 
-// ACCURATE ACTIVE SECTION HIGHLIGHTING
+// Active nav
 function updateActiveNav() {
-    const sections = ['home', 'about-me', 'company', 'logs', 'learnings', 'gallery', 'pictorial', 'culminating', 'closing'];
+    const sections = ['home', 'about-me', 'company', 'logs', 'learnings', 'gallery', 'video', 'pictorial', 'culminating', 'closing'];
     const navbarHeight = 80;
     let current = 'home';
-
     for (const id of sections) {
         const el = document.getElementById(id);
         if (!el) continue;
         const rect = el.getBoundingClientRect();
         const top = rect.top;
         const bottom = rect.bottom;
-
         if (top <= navbarHeight + 30 && bottom >= navbarHeight + 30) {
             current = id;
             break;
         }
     }
-
     document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
         const target = link.getAttribute('href').substring(1);
         link.classList.toggle('active', target === current);
     });
 }
 
-// Event listeners
+// Nav links
 document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -122,7 +114,7 @@ function closeSidebar() {
     if (overlay) overlay.style.display = 'none';
 }
 
-// LIGHTBOX
+// ✅ LIGHTBOX
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 let lightboxImages = [];
@@ -133,10 +125,12 @@ function openLightbox(images, index) {
     currentLightboxIndex = index;
     lightboxImg.src = lightboxImages[currentLightboxIndex];
     lightbox.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
 function closeLightbox() {
     lightbox.style.display = 'none';
+    document.body.style.overflow = '';
 }
 
 function lightboxNext() {
@@ -149,12 +143,17 @@ function lightboxPrev() {
     lightboxImg.src = lightboxImages[currentLightboxIndex];
 }
 
-document.querySelector('.lightbox .close')?.addEventListener('click', closeLightbox);
-document.querySelector('.lightbox-prev')?.addEventListener('click', lightboxPrev);
-document.querySelector('.lightbox-next')?.addEventListener('click', lightboxNext);
-lightbox?.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
+document.querySelector('.lightbox .close')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeLightbox();
 });
+
+lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+        closeLightbox();
+    }
+});
+
 document.addEventListener('keydown', (e) => {
     if (lightbox.style.display === 'flex') {
         if (e.key === 'Escape') closeLightbox();
@@ -163,12 +162,20 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ✅ UNIVERSAL SWIPE/DRAG SUPPORT
+document.querySelector('.lightbox-prev')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    lightboxPrev();
+});
+document.querySelector('.lightbox-next')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    lightboxNext();
+});
+
+// SWIPE SUPPORT
 function addSwipeSupport(container, onPrev, onNext) {
     let startX = 0;
     let startY = 0;
     let isScrolling = false;
-
     container.addEventListener('pointerdown', (e) => {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
         startX = e.clientX;
@@ -176,7 +183,6 @@ function addSwipeSupport(container, onPrev, onNext) {
         isScrolling = false;
         container.setPointerCapture(e.pointerId);
     });
-
     container.addEventListener('pointermove', (e) => {
         if (isScrolling) return;
         const dx = e.clientX - startX;
@@ -185,32 +191,26 @@ function addSwipeSupport(container, onPrev, onNext) {
             isScrolling = true;
         }
     });
-
     container.addEventListener('pointerup', (e) => {
         if (isScrolling) return;
         const dx = e.clientX - startX;
         const threshold = 50;
-
         if (dx > threshold) {
             onPrev();
         } else if (dx < -threshold) {
             onNext();
         }
     });
-
     container.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
-// DAY CAROUSEL CLASS
+// DAY CAROUSEL
 class DayCarousel {
     constructor(container, dayKey, imageCount = 3) {
         this.container = container;
         this.dayKey = dayKey;
         this.imageCount = imageCount;
         this.currentSlide = 0;
-        this.autoPlayInterval = null;
-        this.inactivityTimer = null;
-        this.userInteracted = false;
         this.imagePaths = [];
         this.init();
     }
@@ -242,9 +242,9 @@ class DayCarousel {
             const img = document.createElement('img');
             img.src = src;
             img.alt = `Item ${idx + 1}`;
-            img.addEventListener('click', () => {
+            img.addEventListener('click', (e) => {
+                e.stopPropagation();
                 openLightbox(this.imagePaths, idx);
-                this.onUserInteraction();
             });
             slider.appendChild(img);
         });
@@ -252,23 +252,30 @@ class DayCarousel {
         const prevBtn = document.createElement('button');
         prevBtn.className = 'day-prev';
         prevBtn.innerHTML = '‹';
-        prevBtn.addEventListener('click', () => this.prev());
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.currentSlide > 0) this.currentSlide--;
+            this.updateSlider();
+        });
 
         const nextBtn = document.createElement('button');
         nextBtn.className = 'day-next';
         nextBtn.innerHTML = '›';
-        nextBtn.addEventListener('click', () => this.next());
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.currentSlide < this.imageCount - 1) this.currentSlide++;
+            this.updateSlider();
+        });
 
         wrapper.appendChild(prevBtn);
         wrapper.appendChild(slider);
         wrapper.appendChild(nextBtn);
+        this.container.innerHTML = '';
         this.container.appendChild(wrapper);
 
         this.sliderEl = slider;
         this.updateSlider();
-        this.startAutoPlay();
         this.attachListeners(wrapper);
-
         addSwipeSupport(wrapper, () => this.prev(), () => this.next());
     }
 
@@ -279,52 +286,30 @@ class DayCarousel {
     prev() {
         if (this.currentSlide > 0) this.currentSlide--;
         this.updateSlider();
-        this.onUserInteraction();
     }
 
     next() {
         if (this.currentSlide < this.imageCount - 1) this.currentSlide++;
         this.updateSlider();
-        this.onUserInteraction();
-    }
-
-    onUserInteraction() {
-        this.userInteracted = true;
-        this.resetAutoPlay();
-    }
-
-    resetAutoPlay() {
-        clearInterval(this.autoPlayInterval);
-        clearTimeout(this.inactivityTimer);
-        this.inactivityTimer = setTimeout(() => {
-            this.userInteracted = false;
-            this.startAutoPlay();
-        }, 10000);
-    }
-
-    startAutoPlay() {
-        if (this.userInteracted) return;
-        clearInterval(this.autoPlayInterval);
-        this.autoPlayInterval = setInterval(() => this.next(), 3500);
     }
 
     attachListeners(wrapper) {
-        wrapper.addEventListener('mouseenter', () => this.onUserInteraction());
-        wrapper.addEventListener('mouseleave', () => this.resetAutoPlay());
-        wrapper.addEventListener('touchstart', () => this.onUserInteraction());
+        wrapper.addEventListener('mouseenter', () => {});
+        wrapper.addEventListener('mouseleave', () => {});
+        wrapper.addEventListener('touchstart', () => {});
     }
 }
 
 // MAIN GALLERY
 const totalImages = 66;
 const gallerySlider = document.getElementById('gallerySlider');
-
+gallerySlider.innerHTML = '';
 for (let i = 1; i <= totalImages; i++) {
     const img = document.createElement('img');
     img.src = `images/gallery/r${i}.jpg`;
     img.alt = `Gallery Image ${i}`;
     img.addEventListener('click', () => {
-        const paths = Array.from({length: totalImages}, (_, i) => `images/gallery/r${i + 1}.jpg`);
+        const paths = Array.from({length: totalImages}, (_, j) => `images/gallery/r${j + 1}.jpg`);
         openLightbox(paths, i - 1);
     });
     gallerySlider.appendChild(img);
@@ -348,53 +333,33 @@ function updateMainSlider() {
     gallerySlider.style.transform = `translateX(${-mainCurrentSlide * itemWidth}px)`;
 }
 
-function onMainInteraction() {
-    resetMainAutoPlay();
-}
-
-let mainAutoPlay;
-let mainInactivityTimer;
-
-function resetMainAutoPlay() {
-    clearInterval(mainAutoPlay);
-    clearTimeout(mainInactivityTimer);
-    mainInactivityTimer = setTimeout(() => {
-        startMainAutoPlay();
-    }, 10000);
-}
-
-function startMainAutoPlay() {
-    clearInterval(mainAutoPlay);
-    mainAutoPlay = setInterval(() => mainNext(), 4000);
-}
-
-function mainPrev() {
+mainPrevBtn?.addEventListener('click', () => {
     if (mainCurrentSlide > 0) mainCurrentSlide--;
     updateMainSlider();
-    onMainInteraction();
-}
+});
 
-function mainNext() {
+mainNextBtn?.addEventListener('click', () => {
     const visible = getMainVisibleCount();
     if (mainCurrentSlide < totalImages - visible) mainCurrentSlide++;
     updateMainSlider();
-    onMainInteraction();
-}
-
-mainPrevBtn?.addEventListener('click', mainPrev);
-mainNextBtn?.addEventListener('click', mainNext);
+});
 
 const galleryContainer = document.querySelector('.slider-container');
 if (galleryContainer) {
-    addSwipeSupport(galleryContainer, mainPrev, mainNext);
+    addSwipeSupport(galleryContainer, () => {
+        if (mainCurrentSlide > 0) mainCurrentSlide--;
+        updateMainSlider();
+    }, () => {
+        const visible = getMainVisibleCount();
+        if (mainCurrentSlide < totalImages - visible) mainCurrentSlide++;
+        updateMainSlider();
+    });
 }
-
-gallerySlider?.addEventListener('mouseenter', onMainInteraction);
-gallerySlider?.addEventListener('mouseleave', resetMainAutoPlay);
 
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
     createBubbles('homeBubbles', 5, 7, 'home-bubble');
+    createBubbles('reflectionBubbles', 5, 8, 'reflection-bubble');
 
     for (let day = 1; day <= 10; day++) {
         const el = document.querySelector(`.day-gallery[data-day="${day}"]`);
@@ -412,21 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('load', () => {
         updateMainSlider();
-        startMainAutoPlay();
         updateActiveNav();
     });
 
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                updateActiveNav();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
-
+    window.addEventListener('scroll', updateActiveNav);
     window.addEventListener('resize', () => {
         updateMainSlider();
         updateActiveNav();
