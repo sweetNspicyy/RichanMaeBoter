@@ -114,103 +114,14 @@ function closeSidebar() {
     if (overlay) overlay.style.display = 'none';
 }
 
-// ✅ LIGHTBOX
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightboxImg');
-let lightboxImages = [];
-let currentLightboxIndex = 0;
-
-function openLightbox(images, index) {
-    lightboxImages = images;
-    currentLightboxIndex = index;
-    lightboxImg.src = lightboxImages[currentLightboxIndex];
-    lightbox.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-    lightbox.style.display = 'none';
-    document.body.style.overflow = '';
-}
-
-function lightboxNext() {
-    currentLightboxIndex = (currentLightboxIndex + 1) % lightboxImages.length;
-    lightboxImg.src = lightboxImages[currentLightboxIndex];
-}
-
-function lightboxPrev() {
-    currentLightboxIndex = (currentLightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
-    lightboxImg.src = lightboxImages[currentLightboxIndex];
-}
-
-document.querySelector('.lightbox .close')?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeLightbox();
-});
-
-lightbox?.addEventListener('click', (e) => {
-    if (e.target === lightbox) {
-        closeLightbox();
-    }
-});
-
-document.addEventListener('keydown', (e) => {
-    if (lightbox.style.display === 'flex') {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') lightboxNext();
-        if (e.key === 'ArrowLeft') lightboxPrev();
-    }
-});
-
-document.querySelector('.lightbox-prev')?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    lightboxPrev();
-});
-document.querySelector('.lightbox-next')?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    lightboxNext();
-});
-
-// SWIPE SUPPORT
-function addSwipeSupport(container, onPrev, onNext) {
-    let startX = 0;
-    let startY = 0;
-    let isScrolling = false;
-    container.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        startX = e.clientX;
-        startY = e.clientY;
-        isScrolling = false;
-        container.setPointerCapture(e.pointerId);
-    });
-    container.addEventListener('pointermove', (e) => {
-        if (isScrolling) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        if (Math.abs(dy) > Math.abs(dx)) {
-            isScrolling = true;
-        }
-    });
-    container.addEventListener('pointerup', (e) => {
-        if (isScrolling) return;
-        const dx = e.clientX - startX;
-        const threshold = 50;
-        if (dx > threshold) {
-            onPrev();
-        } else if (dx < -threshold) {
-            onNext();
-        }
-    });
-    container.addEventListener('dragstart', (e) => e.preventDefault());
-}
-
-// DAY CAROUSEL
+// ✅ UPGRADED DAY CAROUSEL — DESKTOP AUTO-SLIDE + LIGHTBOX
 class DayCarousel {
     constructor(container, dayKey, imageCount = 3) {
         this.container = container;
         this.dayKey = dayKey;
         this.imageCount = imageCount;
         this.currentSlide = 0;
+        this.autoInterval = null;
         this.imagePaths = [];
         this.init();
     }
@@ -242,9 +153,14 @@ class DayCarousel {
             const img = document.createElement('img');
             img.src = src;
             img.alt = `Item ${idx + 1}`;
+            img.loading = "lazy";
+            
+            // ✅ DESKTOP: Open fullscreen lightbox | MOBILE: no action (or keep original)
             img.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openLightbox(this.imagePaths, idx);
+                if (window.innerWidth >= 1025) {
+                    e.stopPropagation();
+                    openDesktopLightbox(this.imagePaths, idx);
+                }
             });
             slider.appendChild(img);
         });
@@ -252,20 +168,12 @@ class DayCarousel {
         const prevBtn = document.createElement('button');
         prevBtn.className = 'day-prev';
         prevBtn.innerHTML = '‹';
-        prevBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (this.currentSlide > 0) this.currentSlide--;
-            this.updateSlider();
-        });
+        prevBtn.addEventListener('click', () => this.prev());
 
         const nextBtn = document.createElement('button');
         nextBtn.className = 'day-next';
         nextBtn.innerHTML = '›';
-        nextBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (this.currentSlide < this.imageCount - 1) this.currentSlide++;
-            this.updateSlider();
-        });
+        nextBtn.addEventListener('click', () => this.next());
 
         wrapper.appendChild(prevBtn);
         wrapper.appendChild(slider);
@@ -275,8 +183,13 @@ class DayCarousel {
 
         this.sliderEl = slider;
         this.updateSlider();
-        this.attachListeners(wrapper);
-        addSwipeSupport(wrapper, () => this.prev(), () => this.next());
+        
+        // ✅ START AUTO-SLIDE ONLY ON DESKTOP
+        if (window.innerWidth >= 1025) {
+            this.startAutoSlide();
+            wrapper.addEventListener('mouseenter', () => this.pauseAutoSlide());
+            wrapper.addEventListener('mouseleave', () => this.resumeAutoSlide());
+        }
     }
 
     updateSlider() {
@@ -284,23 +197,87 @@ class DayCarousel {
     }
 
     prev() {
-        if (this.currentSlide > 0) this.currentSlide--;
+        this.currentSlide = (this.currentSlide - 1 + this.imageCount) % this.imageCount;
         this.updateSlider();
     }
 
     next() {
-        if (this.currentSlide < this.imageCount - 1) this.currentSlide++;
+        this.currentSlide = (this.currentSlide + 1) % this.imageCount;
         this.updateSlider();
     }
 
-    attachListeners(wrapper) {
-        wrapper.addEventListener('mouseenter', () => {});
-        wrapper.addEventListener('mouseleave', () => {});
-        wrapper.addEventListener('touchstart', () => {});
+    startAutoSlide() {
+        this.autoInterval = setInterval(() => this.next(), 3500);
+    }
+
+    pauseAutoSlide() {
+        if (this.autoInterval) clearInterval(this.autoInterval);
+    }
+
+    resumeAutoSlide() {
+        this.pauseAutoSlide();
+        this.startAutoSlide();
     }
 }
 
-// MAIN GALLERY
+// ✅ DESKTOP LIGHTBOX FUNCTIONS
+let desktopLightboxImages = [];
+let currentDesktopIndex = 0;
+const lb = document.getElementById('lightboxDesktop');
+const lbImg = document.getElementById('lightboxDesktopImg');
+
+function openDesktopLightbox(images, index) {
+    desktopLightboxImages = images;
+    currentDesktopIndex = index;
+    lbImg.src = desktopLightboxImages[currentDesktopIndex];
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDesktopLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function desktopLightboxNext() {
+    currentDesktopIndex = (currentDesktopIndex + 1) % desktopLightboxImages.length;
+    lbImg.src = desktopLightboxImages[currentDesktopIndex];
+}
+
+function desktopLightboxPrev() {
+    currentDesktopIndex = (currentDesktopIndex - 1 + desktopLightboxImages.length) % desktopLightboxImages.length;
+    lbImg.src = desktopLightboxImages[currentDesktopIndex];
+}
+
+// Attach lightbox event listeners
+if (lb) {
+    lb.querySelector('.close-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeDesktopLightbox();
+    });
+    lb.querySelector('.prev-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        desktopLightboxPrev();
+    });
+    lb.querySelector('.next-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        desktopLightboxNext();
+    });
+    lb.addEventListener('click', (e) => {
+        if (e.target === lb) closeDesktopLightbox();
+    });
+}
+
+// ✅ KEYBOARD NAVIGATION (DESKTOP ONLY)
+document.addEventListener('keydown', (e) => {
+    if (lb?.classList.contains('open')) {
+        if (e.key === 'Escape') closeDesktopLightbox();
+        if (e.key === 'ArrowLeft') desktopLightboxPrev();
+        if (e.key === 'ArrowRight') desktopLightboxNext();
+    }
+});
+
+// MAIN GALLERY (existing)
 const totalImages = 66;
 const gallerySlider = document.getElementById('gallerySlider');
 gallerySlider.innerHTML = '';
@@ -309,8 +286,10 @@ for (let i = 1; i <= totalImages; i++) {
     img.src = `images/gallery/r${i}.jpg`;
     img.alt = `Gallery Image ${i}`;
     img.addEventListener('click', () => {
-        const paths = Array.from({length: totalImages}, (_, j) => `images/gallery/r${j + 1}.jpg`);
-        openLightbox(paths, i - 1);
+        if (window.innerWidth >= 1025) {
+            const paths = Array.from({length: totalImages}, (_, j) => `images/gallery/r${j + 1}.jpg`);
+            openDesktopLightbox(paths, i - 1);
+        }
     });
     gallerySlider.appendChild(img);
 }
@@ -343,18 +322,6 @@ mainNextBtn?.addEventListener('click', () => {
     if (mainCurrentSlide < totalImages - visible) mainCurrentSlide++;
     updateMainSlider();
 });
-
-const galleryContainer = document.querySelector('.slider-container');
-if (galleryContainer) {
-    addSwipeSupport(galleryContainer, () => {
-        if (mainCurrentSlide > 0) mainCurrentSlide--;
-        updateMainSlider();
-    }, () => {
-        const visible = getMainVisibleCount();
-        if (mainCurrentSlide < totalImages - visible) mainCurrentSlide++;
-        updateMainSlider();
-    });
-}
 
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
